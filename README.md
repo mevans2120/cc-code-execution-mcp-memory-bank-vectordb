@@ -104,11 +104,35 @@ scripts/           # Utility scripts
 chromadb-data/     # Local database storage
 ```
 
-### Adding MCP Server
-The MCP server (Task 4) will enable Claude Code agents to query the database. Implementation pending.
+
+### MCP Server
+The MCP server enables Claude Code agents to query the database via the Model Context Protocol.
+
+**Start the server:**
+```bash
+npm run mcp:dev
+```
+
+**Available tools:**
+- `query_vector_db` - Semantic search across documentation
+- `search_by_category` - Category-filtered search
+- `get_stats` - Collection statistics
+- `get_recent_docs` - Recently modified documents
+- `add_documents` - Add new documents
 
 ### CLI Tools
-Command-line interface (Task 5) for manual queries and maintenance. Implementation pending.
+Command-line interface for manual queries and maintenance.
+
+**Available commands:**
+```bash
+npm run cli query "your search query"  # Search the database
+npm run cli stats                       # Show statistics
+npm run cli recent [days]               # Show recent docs (default: 7 days)
+npm run cli clear                       # Clear collection
+npm run cli backup <path>               # Export backup
+npm run cli restore <path>              # Import backup
+```
+
 
 ## Troubleshooting
 
