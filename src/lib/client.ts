@@ -44,8 +44,12 @@ export class ProjectVectorDB {
       embeddingFunction,
     } = config;
 
+    // Parse the URL to get host and port
+    const url = new URL(chromaUrl);
     this.client = new ChromaClient({
-      path: chromaUrl,
+      host: url.hostname,
+      port: parseInt(url.port) || 8000,
+      ssl: url.protocol === 'https:'
     });
     this.collectionName = collectionName;
     this.embeddingFunction = embeddingFunction;
@@ -87,23 +91,16 @@ export class ProjectVectorDB {
     if (this.isInitialized) return;
 
     try {
-      // Try to get existing collection first
-      try {
-        this.collection = await this.client.getCollection({
-          name: this.collectionName,
-        });
-        console.log(`✅ Connected to existing collection: ${this.collectionName}`);
-      } catch (error) {
-        // Collection doesn't exist, create it
-        this.collection = await this.client.createCollection({
-          name: this.collectionName,
-          metadata: {
-            description: 'Project documentation for Claude Code agents',
-            created: new Date().toISOString(),
-          },
-        });
-        console.log(`✅ Created new collection: ${this.collectionName}`);
-      }
+      // Use getOrCreateCollection for better reliability
+      this.collection = await this.client.getOrCreateCollection({
+        name: this.collectionName,
+        embeddingFunction: this.embeddingFunction,
+        metadata: {
+          description: 'Project documentation for Claude Code agents',
+          created: new Date().toISOString(),
+        },
+      });
+      console.log(`✅ Connected to collection: ${this.collectionName}`);
 
       this.isInitialized = true;
     } catch (error) {

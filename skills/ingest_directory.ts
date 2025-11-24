@@ -150,28 +150,26 @@ async function ingestDirectory(dirPath: string) {
 }
 
 // Script execution
-if (require.main === module) {
-  const args = process.argv.slice(2);
+const args = process.argv.slice(2);
 
-  if (args.length === 0) {
-    console.error('Usage: tsx skills/ingest_directory.ts /path/to/docs');
-    process.exit(1);
-  }
-
-  const dirPath = path.resolve(args[0]);
-
-  if (!fs.existsSync(dirPath)) {
-    console.error(`❌ Directory not found: ${dirPath}`);
-    process.exit(1);
-  }
-
-  if (!fs.statSync(dirPath).isDirectory()) {
-    console.error(`❌ Not a directory: ${dirPath}`);
-    process.exit(1);
-  }
-
-  ingestDirectory(dirPath).catch((error) => {
-    console.error('❌ Error during ingestion:', error);
-    process.exit(1);
-  });
+if (args.length === 0) {
+  console.error('Usage: tsx skills/ingest_directory.ts /path/to/docs');
+  process.exit(1);
 }
+
+const dirPath = path.resolve(args[0]);
+
+if (!fs.existsSync(dirPath)) {
+  console.error(`❌ Directory not found: ${dirPath}`);
+  process.exit(1);
+}
+
+if (!fs.statSync(dirPath).isDirectory()) {
+  console.error(`❌ Not a directory: ${dirPath}`);
+  process.exit(1);
+}
+
+ingestDirectory(dirPath).catch((error) => {
+  console.error('❌ Error during ingestion:', error);
+  process.exit(1);
+});
