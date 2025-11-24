@@ -40,6 +40,20 @@ async function ensureInitialized() {
 // Define MCP tools
 const tools: Tool[] = [
   {
+    name: 'search_tools',
+    description: 'Search for available tools by keyword. Use this to discover specific capabilities without loading all tool definitions.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        query: {
+          type: 'string',
+          description: 'Search query to find relevant tools',
+        },
+      },
+      required: ['query'],
+    },
+  },
+  {
     name: 'query_vector_db',
     description: 'Semantic search across project documentation. Returns relevant documentation chunks based on natural language queries.',
     inputSchema: {
@@ -146,6 +160,39 @@ const tools: Tool[] = [
         },
       },
       required: ['documents'],
+    },
+  },
+  {
+    name: 'backup_database',
+    description: 'Export the entire vector database to a backup file',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        outputPath: {
+          type: 'string',
+          description: 'Path where the backup file should be saved (e.g., ./backups/vectordb-backup.jsonl)',
+        },
+      },
+      required: ['outputPath'],
+    },
+  },
+  {
+    name: 'restore_database',
+    description: 'Restore the vector database from a backup file',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        inputPath: {
+          type: 'string',
+          description: 'Path to the backup file to restore from',
+        },
+        clearExisting: {
+          type: 'boolean',
+          description: 'Whether to clear existing data before restoring (default: false)',
+          default: false,
+        },
+      },
+      required: ['inputPath'],
     },
   },
 ];
@@ -335,6 +382,46 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
               }, null, 2)
             }
           ]
+        };
+      }
+
+      case 'backup_database': {
+        const { outputPath } = args as { outputPath: string };
+        await vectorDB.exportBackup(outputPath);
+
+        return {
+          content: [
+            {
+              type: 'text',
+              text: JSON.stringify({
+                success: true,
+                message: `Database backed up to ${outputPath}`,
+                path: outputPath,
+              }, null, 2),
+            },
+          ],
+        };
+      }
+
+      case 'restore_database': {
+        const { inputPath, clearExisting = false } = args as {
+          inputPath: string;
+          clearExisting?: boolean;
+        };
+        await vectorDB.importBackup(inputPath, clearExisting);
+
+        return {
+          content: [
+            {
+              type: 'text',
+              text: JSON.stringify({
+                success: true,
+                message: `Database restored from ${inputPath}`,
+                clearExisting,
+                path: inputPath,
+              }, null, 2),
+            },
+          ],
         };
       }
 
