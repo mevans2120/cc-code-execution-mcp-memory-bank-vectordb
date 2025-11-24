@@ -3,14 +3,19 @@
  * Reset the collection and reingest with proper embeddings
  */
 
+import 'dotenv/config';
 import { ChromaClient } from 'chromadb';
 import { GoogleAIEmbeddingFunction } from '../src/lib/embeddings.js';
 
 async function resetAndReingest() {
   console.log('🔄 Resetting and reingesting with proper embeddings\n');
 
-  // Set API key
-  process.env.GOOGLE_GENERATIVE_AI_API_KEY = 'AIzaSyDQUM9sBZiExzUFeVZONPGFyS2TR4WEIPY';
+  // API key should be set in .env file
+  if (!process.env.GOOGLE_GENERATIVE_AI_API_KEY) {
+    console.error('❌ GOOGLE_GENERATIVE_AI_API_KEY not found in environment');
+    console.error('   Please ensure .env file contains the API key');
+    process.exit(1);
+  }
 
   // Create embedding function
   const embedder = new GoogleAIEmbeddingFunction();

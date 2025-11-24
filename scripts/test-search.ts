@@ -3,6 +3,7 @@
  * Test vector database search functionality
  */
 
+import 'dotenv/config';
 import { ChromaClient } from 'chromadb';
 import { GoogleAIEmbeddingFunction } from '../src/lib/embeddings.js';
 
@@ -10,7 +11,11 @@ async function testSearch() {
   console.log('🔍 Testing Vector DB Search\n');
 
   // Set up embedding function
-  process.env.GOOGLE_GENERATIVE_AI_API_KEY = 'AIzaSyDQUM9sBZiExzUFeVZONPGFyS2TR4WEIPY';
+  if (!process.env.GOOGLE_GENERATIVE_AI_API_KEY) {
+    console.error('❌ GOOGLE_GENERATIVE_AI_API_KEY not found in environment');
+    console.error('   Please ensure .env file contains the API key');
+    process.exit(1);
+  }
   const embedder = new GoogleAIEmbeddingFunction();
 
   // Connect to ChromaDB

@@ -14,10 +14,13 @@
     "cli": "tsx cli/vectordb-cli.ts"
   },
   "dependencies": {
+    "@chroma-core/default-embed": "^0.1.9",
     "@google/generative-ai": "^0.24.1",
     "@modelcontextprotocol/sdk": "^1.22.0",
     "chromadb": "^3.1.4",
+    "chromadb-default-embed": "^2.14.0",
     "commander": "^14.0.2",
+    "dotenv": "^17.2.3",
     "glob": "^11.0.3",
     "gray-matter": "^4.0.3"
   },
