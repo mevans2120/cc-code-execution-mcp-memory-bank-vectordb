@@ -1,0 +1,32 @@
+{
+  "name": "vectordb-agent-skill",
+  "version": "1.0.0",
+  "description": "Agent skill for searching the vector database",
+  "main": "scripts/search.ts",
+  "scripts": {
+    "search": "tsx scripts/search.ts",
+    "test": "tsx scripts/search.ts 'test query'",
+    "install-skill": "cp -r . ~/.claude/skills/vectordb/"
+  },
+  "keywords": [
+    "claude",
+    "agent",
+    "skill",
+    "vectordb",
+    "search",
+    "patterns"
+  ],
+  "author": "Claude Code Vector DB",
+  "license": "MIT",
+  "dependencies": {
+    "chromadb": "^1.5.0"
+  },
+  "devDependencies": {
+    "tsx": "^4.0.0",
+    "@types/node": "^20.0.0"
+  },
+  "requirements": {
+    "chromadb": "Must be running on localhost:8000",
+    "collection": "project-docs must exist"
+  }
+}
